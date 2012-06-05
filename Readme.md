@@ -1,5 +1,7 @@
 # LPC1343 Code Base
 
+This is a fork of the LPC1343 Code Base to support my development board: http://dorkbotpdx.org/blog/scott_d/arm_lcd_development_board
+
 ## Overview
 
 This software library is based on the freely available LPC1343 Reference
