@@ -45,6 +45,8 @@
 
 #include "drivers/displays/tft/drawing.h"
 #include "drivers/displays/tft/lcd.h"
+#include "core/ssp/ssp.h"
+
 
 // Only include read support if CFG_SDCARD is defined
 #ifdef CFG_SDCARD
@@ -183,7 +185,6 @@ bmp_error_t bmpDrawBitmap(uint16_t x, uint16_t y, const char* filename)
   bmp_error_t error = BMP_ERROR_NONE;
   DSTATUS stat;
   BYTE res;
-
   stat = disk_initialize(0);
 
   if ((stat & STA_NOINIT) || (stat & STA_NODISK))

@@ -72,7 +72,7 @@ void WAKEUP_IRQHandler(void)    WEAK_ALIAS(irq_undefined);
  * are weakly aliased which means that (re)definitions will overide these.
  ****************************************************************************/
 
-void fault_undefined() {
+ void fault_undefined() {
   // Do nothing when occured interrupt is not defined, just keep looping
   while(1);
 }

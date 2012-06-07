@@ -137,12 +137,24 @@ void systemInit()
   gpioSetDir(CFG_LED_PORT, CFG_LED_PIN, 1);
   gpioSetValue(CFG_LED_PORT, CFG_LED_PIN, CFG_LED_OFF);
 
-  // Config alt reset pin if requested (really only relevant to LPC1343 LCD Board)
-  #ifdef CFG_ALTRESET
-    gpioSetDir (CFG_ALTRESET_PORT, CFG_ALTRESET_PIN, gpioDirection_Input);
-    gpioSetInterrupt (CFG_ALTRESET_PORT, CFG_ALTRESET_PIN, gpioInterruptSense_Level, gpioInterruptEdge_Single, gpioInterruptEvent_ActiveHigh);
-    gpioIntEnable (CFG_ALTRESET_PORT, CFG_ALTRESET_PIN); 
-  #endif
+#ifdef CFG_BRD_LPC1343_ARMBY
+  // Setup GPIO function on REGEN pin
+  CFG_REGEN_IOCON &= ~CFG_REGEN_MASK;
+  CFG_REGEN_IOCON |= CFG_REGEN_FUNC_GPIO;
+  //  Setup GPIO function on RB pin
+  CFG_RB_IOCON &= ~CFG_RB_MASK;
+  CFG_RB_IOCON |= CFG_RB_FUNC_GPIO;
+  gpioSetDir(CFG_REGEN_PORT,CFG_REGEN_PIN,gpioDirection_Output);
+  gpioSetDir(CFG_RB_PORT,CFG_RB_PIN, gpioDirection_Input);
+  gpioSetDir(CFG_PB_PORT,CFG_PB_PIN, gpioDirection_Input);
+  gpioSetPullup(&IOCON_PIO0_5, gpioPullupMode_PullDown);
+  gpioSetPullup(&IOCON_PIO0_1, gpioPullupMode_PullUp);
+  // Set the regulator enable pin on
+  gpioSetValue(CFG_REGEN_PORT,CFG_REGEN_PIN,1);
+
+#endif
+
+
 
   // Initialise EEPROM
   #ifdef CFG_I2CEEPROM
@@ -152,18 +164,18 @@ void systemInit()
   // Initialise UART with the default baud rate
   #ifdef CFG_PRINTF_UART
     #ifdef CFG_I2CEEPROM
-      uint32_t uart = eepromReadU32(CFG_EEPROM_UART_SPEED);
-      if ((uart == 0xFFFFFFFF) || (uart > 115200))
-      {
-        uartInit(CFG_UART_BAUDRATE);  // Use default baud rate
-      }
-      else
-      {
-        uartInit(uart);               // Use baud rate from EEPROM
-      }
+    uint32_t uart = eepromReadU32(CFG_EEPROM_UART_SPEED);
+    if ((uart == 0xFFFFFFFF) || (uart > 115200))
+    {
+      uartInit(CFG_UART_BAUDRATE);  // Use default baud rate
+    }
+    else
+    {
+      uartInit(uart);               // Use baud rate from EEPROM
+    }
     #else
       uartInit(CFG_UART_BAUDRATE);
-    #endif
+  #endif
   #endif
 
   // Initialise PWM (requires 16-bit Timer 1 and P1.9)
@@ -221,7 +233,7 @@ void systemInit()
     {
       tsCalibrate();
     }
-    #endif
+  #endif
     */
   #endif
 
@@ -304,7 +316,6 @@ int puts(const char * str)
     // Handle output character by character in __putchar
     while(*str) __putchar(*str++);
   #endif
-
   return 0;
 }
 

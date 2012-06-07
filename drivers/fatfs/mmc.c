@@ -124,7 +124,8 @@ static void FCLK_FAST()
 //#define xmit_spi(dat) (SSPSend((uint8_t*)&(dat), 1))
 static void xmit_spi(BYTE dat)
 {
-    sspSend(0, (uint8_t*) &dat, 1);
+	int tmp = dat;
+    sspSend(0, &tmp, 1);
 }
 
 
@@ -135,20 +136,24 @@ static void xmit_spi(BYTE dat)
 static
 BYTE rcvr_spi (void)
 {
-    BYTE data = 0;
+   int data = 0;
 
     sspReceive(0, &data, 1);
 
-    return data;
+    return (BYTE)data;
 }
 
 /* Alternative macro to receive data fast */
 
-#define rcvr_spi_m(dst) \
+//#define rcvr_spi_m(dst) \
     do { \
         sspReceive(0, (uint8_t*)(dst), 1); \
     } while(0)
 
+#define rcvr_spi_m(dst) \
+	do { int tmp; \
+		sspReceive(0,&tmp, 1); *dst = (uint8_t)tmp; \
+	} while(0)
 
 
 
@@ -363,14 +368,14 @@ DSTATUS disk_initialize (
         sspInit(0, sspClockPolarity_Low, sspClockPhase_RisingEdge); 
     
         gpioSetDir( SSP0_CSPORT, SSP0_CSPIN, gpioDirection_Output ); /* CS */
-        gpioSetDir( CFG_SDCARD_CDPORT, CFG_SDCARD_CDPIN, gpioDirection_Input ); /* Card Detect */
-        gpioSetPullup (&IOCON_PIO3_0, gpioPullupMode_Inactive);
+//        gpioSetDir( CFG_SDCARD_CDPORT, CFG_SDCARD_CDPIN, gpioDirection_Input ); /* Card Detect */
+//        gpioSetPullup (&IOCON_PIO3_0, gpioPullupMode_Inactive);
 
         // Wait 20ms for card detect to stabilise
         systickDelay(20);        
 
 	if (drv) return STA_NOINIT;			/* Supports only single drive */
-	if (Stat & STA_NODISK) return Stat;	/* No card in the socket */
+//	if (Stat & STA_NODISK) return Stat;	/* No card in the socket */
 
 	power_on();							/* Force socket power on */
 	FCLK_SLOW();
@@ -650,35 +655,16 @@ DRESULT disk_ioctl (
 
 void disk_timerproc (void)
 {
-  static BYTE pv;
   BYTE n;
-  BYTE s;
 
   n = Timer1;						/* 100Hz decrement timer */
   if (n) Timer1 = --n;
   n = Timer2;
   if (n) Timer2 = --n;
 
-  n = pv;
-  pv = 0;
-  /* Sample card detect pin */
-  pv = gpioGetValue(CFG_SDCARD_CDPORT, CFG_SDCARD_CDPIN);
+  // No card detect hooked up so always say disk there.
+  Stat &= ~STA_NODISK;
     
-  /* Have contacts stabled? */
-  if (n == pv) 
-  {
-    s = Stat;
-      
-    /* write protect NOT supported */
-      
-    /* check card detect */
-    if (!pv)                            /* (Socket empty) */
-      s |= (STA_NODISK | STA_NOINIT);
-    else				/* (Card inserted) */
-      s &= ~STA_NODISK;
-    
-    Stat = s;
-  }
 }
 
 

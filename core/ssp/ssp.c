@@ -150,7 +150,7 @@ void sspInit (uint8_t portNum, sspClockPolarity_t polarity, sspClockPhase_t phas
     SCB_SYSAHBCLKCTRL |= (SCB_SYSAHBCLKCTRL_SSP0);
   
     /* Divide by 1 (SSPCLKDIV also enables to SSP CLK) */
-    SCB_SSP0CLKDIV = SCB_SSP0CLKDIV_DIV1;
+    SCB_SSP0CLKDIV = SCB_SSP0CLKDIV_DIV1;  // 1 = 4.0MHz
   
     /* Set P0.8 to SSP MISO */
     IOCON_PIO0_8 &= ~IOCON_PIO0_8_FUNC_MASK;
@@ -180,9 +180,11 @@ void sspInit (uint8_t portNum, sspClockPolarity_t polarity, sspClockPhase_t phas
     gpioSetPullup(&IOCON_PIO0_2, gpioPullupMode_Inactive);  // Board has external pull-up
   
     /* If SSP0CLKDIV = DIV1 -- (PCLK / (CPSDVSR � [SCR+1])) = (72,000,000 / (2 x [8 + 1])) = 4.0 MHz */
+    /* If SSP0CLKDIV = DIV1 -- (PCLK / (CPSDVSR � [SCR+1])) = (72,000,000 / (2 x [3 + 1])) = 9.0 MHz */
     uint32_t configReg = ( SSP_SSP0CR0_DSS_8BIT   // Data size = 8-bit
                   | SSP_SSP0CR0_FRF_SPI           // Frame format = SPI
-                  | SSP_SSP0CR0_SCR_8);           // Serial clock rate = 8
+//                  | SSP_SSP0CR0_SCR_8);           // Serial clock rate = 8
+                  | SSP_SSP0CR0_SCR_3);           // Serial clock rate = 3
   
     // Set clock polarity
     if (polarity == sspClockPolarity_High)
@@ -224,6 +226,14 @@ void sspInit (uint8_t portNum, sspClockPolarity_t polarity, sspClockPhase_t phas
   return;
 }
 
+void setSPIwidth8() {
+    SSP_SSP0CR0 = (SSP_SSP0CR0 & ~0xF) | SSP_SSP0CR0_DSS_8BIT;
+}
+
+void setSPIwidth9() {
+    SSP_SSP0CR0 = (SSP_SSP0CR0 & ~0xF) | SSP_SSP0CR0_DSS_9BIT;
+}
+
 /**************************************************************************/
 /*! 
     @brief Sends a block of data to the SSP0 port
@@ -236,7 +246,7 @@ void sspInit (uint8_t portNum, sspClockPolarity_t polarity, sspClockPhase_t phas
                 Block length of the data buffer
 */
 /**************************************************************************/
-void sspSend (uint8_t portNum, uint8_t *buf, uint32_t length)
+void sspSend (uint8_t portNum, int *buf, uint32_t length)
 {
   uint32_t i;
   uint8_t Dummy = Dummy;
@@ -273,7 +283,7 @@ void sspSend (uint8_t portNum, uint8_t *buf, uint32_t length)
                 Block length of the data buffer
 */
 /**************************************************************************/
-void sspReceive(uint8_t portNum, uint8_t *buf, uint32_t length)
+void sspReceive(uint8_t portNum, int *buf, uint32_t length)
 {
   uint32_t i;
 

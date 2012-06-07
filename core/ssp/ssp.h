@@ -79,7 +79,9 @@ sspClockPhase_t;
 
 extern void SSP_IRQHandler (void);
 void sspInit (uint8_t portNum, sspClockPolarity_t polarity, sspClockPhase_t phase);
-void sspSend (uint8_t portNum, uint8_t *buf, uint32_t length);
-void sspReceive (uint8_t portNum, uint8_t *buf, uint32_t length);
+void sspSend (uint8_t portNum, int *buf, uint32_t length);
+void sspReceive (uint8_t portNum, int *buf, uint32_t length);
+void setSPIwidth8();
+void setSPIwidth9();
 
 #endif

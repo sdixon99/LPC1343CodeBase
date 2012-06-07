@@ -121,7 +121,8 @@
         LPC1343 LPCXpresso board
 
     -----------------------------------------------------------------------*/
-    #define CFG_BRD_LPC1343_REFDESIGN
+#define CFG_BRD_LPC1343_ARMBY
+    // #define CFG_BRD_LPC1343_REFDESIGN
     // #define CFG_BRD_LPC1343_REFDESIGN_MINIMAL
     // #define CFG_BRD_LPC1343_TFTLCDSTANDALONE_USB
     // #define CFG_BRD_LPC1343_TFTLCDSTANDALONE_UART
@@ -149,12 +150,14 @@
     STEPPER     . .  .  .     . . . . . . . . .     X X X X
     CHIBI       X X  X  .     . . . . . . . . .     . . . .
     ILI9325/8   X X  X  X     X X X X X X X X X     . . . X
+    ILI9325     X X  X  X     X X X X X X X X X     . . . X
     ST7565      X X  X  X     X X X X X X X X X     . . . X
     ST7735      . .  .  .     X X X X X X . . .     . . . .
     SHARPMEM    . .  .  .     X X X X . . . . .     . . . .
     SSD1306 SPI . .  .  .     X X X . X X . . .     . . . .
     SSD1351     . .  .  .     X X X X X . . . .     . . . .
     MCP121      . .  .  .     . . . . . . . . .     . X . .
+    SSD1306     . .  .  .     X X X . X X . . .     . . . .
     PN532 [3]   . .  .  .     . . . . . . . . .     . X X . 
 
                 TIMERS                    SSP     ADC         UART
@@ -166,12 +169,13 @@
     PMU [1]     .     .     X     .       .       . . . .     .
     USB         .     .     .     X       .       . . . .     .
     STEPPER     .     .     X     .       .       . . . .     .
-    CHIBI       x     .     .     .       X       . . . .     .
     ILI9325/8   .     .     .     .       .       X X X X     .
     ST7565      .     .     .     .       .       X X X X     .
     ST7535      .     .     .     .       .       . . . .     .
     SHARPMEM    .     .     .     .       .       . . . .     .
     SSD1306 SPI .     .     .     .       .       . . . .     .
+    ST7535      .     .     .     .       .       . . . .     .
+    SSD1306     .     .     .     .       .       . . . .     .
     INTERFACE   .     .     .     .       .       . . . .     X[2]
 
     [1]  PMU uses 32-bit Timer 0 for SW wakeup from deep-sleep.  This timer
@@ -228,7 +232,21 @@
                     other peripherals to determine timing.
 
     -----------------------------------------------------------------------*/
-    #define CFG_CPU_CCLK                (72000000)  // 1 tick = 13.88nS
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define CFG_CPU_CCLK                (72000000)  // 1 tick = 13.88nS
+    #endif
+
+    #ifdef CFG_BRD_LPC1343_REFDESIGN
+      #define CFG_CPU_CCLK                (72000000)  // 1 tick = 13.88nS
+    #endif
+
+    #ifdef CFG_BRD_LPC1343_TFTLCDSTANDALONE
+      #define CFG_CPU_CCLK                (72000000)  // 1 tick = 13.88nS
+    #endif
+
+    #ifdef CFG_BRD_LPC1343_802154USBSTICK
+      #define CFG_CPU_CCLK                (72000000)  // 1 tick = 13.88nS
+    #endif
 /*=========================================================================*/
 
 
@@ -314,6 +332,9 @@
       // #define GPIO_ENABLE_IRQ2
       // #define GPIO_ENABLE_IRQ3
     #endif
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define GPIO_ENABLE_IRQ0
+    #endif
 /*=========================================================================*/
 
 
@@ -350,6 +371,10 @@
                               characters to store in memory.
 
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define CFG_UART_BAUDRATE           (115200)
+      #define CFG_UART_BUFSIZE            (512)
+    #endif
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       #define CFG_UART_BAUDRATE           (115200)
       #define CFG_UART_BUFSIZE            (512)
@@ -395,6 +420,10 @@
     CFG_SSP0_SCKPIN_0_6
 
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+//      #define CFG_SSP0_SCKPIN_2_11
+       #define CFG_SSP0_SCKPIN_0_6
+    #endif
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       #define CFG_SSP0_SCKPIN_2_11
       // #define CFG_SSP0_SCKPIN_0_6
@@ -471,6 +500,10 @@
       #define ADC_AVERAGING_ENABLE    (0)
       #define ADC_AVERAGING_SAMPLES   (5)
     #endif
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define ADC_AVERAGING_ENABLE    (0)
+      #define ADC_AVERAGING_SAMPLES   (5)
+    #endif
 /*=========================================================================*/
 
 
@@ -484,6 +517,25 @@
     CFG_LED_OFF               The pin state to turn the LED off (0 = low, 1 = high)
 
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define CFG_RB_PORT		          (0)
+      #define CFG_RB_PIN	              (1)
+      #define CFG_RB_IOCON                IOCON_PIO0_1
+      #define CFG_RB_MASK                 IOCON_PIO0_1_FUNC_MASK
+      #define CFG_RB_FUNC_GPIO            IOCON_PIO0_1_FUNC_GPIO
+      #define CFG_REGEN_PORT              (1)
+      #define CFG_REGEN_PIN	              (0)
+      #define CFG_REGEN_IOCON             IOCON_JTAG_TMS_PIO1_0
+      #define CFG_REGEN_MASK              IOCON_JTAG_TMS_PIO1_0_FUNC_MASK
+      #define CFG_REGEN_FUNC_GPIO         IOCON_JTAG_TMS_PIO1_0_FUNC_GPIO
+      #define CFG_PB_PORT	              (0)
+      #define CFG_PB_PIN	              (7)
+      #define CFG_PB_IOCON                IOCON_PIO0_7
+      #define CFG_LED_PORT                (1)
+      #define CFG_LED_PIN                 (9)
+      #define CFG_LED_ON                  (0)
+      #define CFG_LED_OFF                 (1)
+    #endif
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       #define CFG_LED_PORT                (2)
       #define CFG_LED_PIN                 (10)
@@ -552,6 +604,13 @@
 
     DEPENDENCIES:             SDCARD requires the use of SSP0.
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      #define CFG_SDCARD
+      #define CFG_SDCARD_READONLY         (1)   // Must be 0 or 1
+      #define CFG_SDCARD_CDPORT           (3)
+      #define CFG_SDCARD_CDPIN            (0)
+    #endif
+
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       // #define CFG_SDCARD
       #define CFG_SDCARD_READONLY         (1)   // Must be 0 or 1
@@ -619,6 +678,14 @@
     -----------------------------------------------------------------------*/
     #define CFG_USB_VID                   (0x239A)
     #define CFG_USB_PID                   (0x1002)
+
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      // #define CFG_USBHID
+      #define CFG_USBCDC
+      #define CFG_USBCDC_BAUDRATE         (115200)
+      #define CFG_USBCDC_INITTIMEOUT      (500)
+      #define CFG_USBCDC_BUFFERSIZE       (256)
+    #endif
 
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       // #define CFG_USBHID
@@ -693,13 +760,18 @@
     Note: If no printf redirection definitions are present, all printf
     output will be ignored.
     -----------------------------------------------------------------------*/
-    #ifdef CFG_BRD_LPC1343_REFDESIGN
+    #ifdef CFG_BRD_LPC1343_ARMBY
+      // #define CFG_PRINTF_UART
+      #define CFG_PRINTF_USBCDC
+      #define CFG_PRINTF_NEWLINE          "\r\n"
       #define CFG_PRINTF_MAXSTRINGSIZE    (255)
+    #endif
+
+    #ifdef CFG_BRD_LPC1343_REFDESIGN
       // #define CFG_PRINTF_UART
       #define CFG_PRINTF_USBCDC
       #define CFG_PRINTF_NEWLINE          "\r\n"
     #endif
-
     #ifdef CFG_BRD_LPC1343_REFDESIGN_MINIMAL
       #define CFG_PRINTF_MAXSTRINGSIZE    (255)
       #define CFG_PRINTF_UART
@@ -797,6 +869,20 @@
                               CFG_PRINTF_UART or CFG_PRINTF_USBCDC are 
                               selected.
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+//      #define CFG_INTERFACE
+      #define CFG_INTERFACE_MAXMSGSIZE    (256)
+      #define CFG_INTERFACE_PROMPT        "LPC1343 >> "
+      #define CFG_INTERFACE_SILENTMODE    (0)
+      #define CFG_INTERFACE_DROPCR        (0)
+      #define CFG_INTERFACE_ENABLEIRQ     (0)
+      #define CFG_INTERFACE_IRQPORT       (2)
+      #define CFG_INTERFACE_IRQPIN        (0)
+      #define CFG_INTERFACE_SHORTERRORS   (0)
+      #define CFG_INTERFACE_CONFIRMREADY  (0)
+      #define CFG_INTERFACE_LONGSYSINFO   (0)
+      #endif
+
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       #define CFG_INTERFACE
       #define CFG_INTERFACE_MAXMSGSIZE    (256)
@@ -953,6 +1039,11 @@
     CFG_I2CEEPROM_SIZE        The number of bytes available on the EEPROM
 
     -----------------------------------------------------------------------*/
+    #ifdef CFG_BRD_LPC1343_ARMBY
+//      #define CFG_I2CEEPROM
+      #define CFG_I2CEEPROM_SIZE          (3072)
+    #endif
+
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       #define CFG_I2CEEPROM
       #define CFG_I2CEEPROM_SIZE          (3072)
@@ -1072,7 +1163,7 @@
                                 'tools/schematics/AT86RF212LPC1114_v1.6.pdf'
                                 show how 'CHIBI' is meant to be connected
     -----------------------------------------------------------------------*/
-    #ifdef CFG_BRD_LPC1343_REFDESIGN
+    #ifdef CFG_BRD_LPC1343_ARMBY
       // #define CFG_CHIBI
       #define CFG_CHIBI_MODE              (0)                 // OQPSK_868MHZ
       #define CFG_CHIBI_POWER             (0xE9)              // CHB_PWR_EU2_3DBM
@@ -1082,6 +1173,15 @@
       #define CFG_CHIBI_BUFFERSIZE        (128)
     #endif
 
+    #ifdef CFG_BRD_LPC1343_REFDESIGN
+      // #define CFG_CHIBI
+      #define CFG_CHIBI_MODE              (0)                 // OQPSK_868MHZ
+      #define CFG_CHIBI_POWER             (0xE9)              // CHB_PWR_EU2_3DBM
+      #define CFG_CHIBI_CHANNEL           (0)                 // 868-868.6 MHz
+      #define CFG_CHIBI_PANID             (0x1234)
+      #define CFG_CHIBI_PROMISCUOUS       (0)
+      #define CFG_CHIBI_BUFFERSIZE        (128)
+    #endif
     #ifdef CFG_BRD_LPC1343_REFDESIGN_MINIMAL
       // #define CFG_CHIBI
       #define CFG_CHIBI_MODE              (0)                 // OQPSK_868MHZ
@@ -1173,6 +1273,11 @@
     DEPENDENCIES:               TFTLCD requires the use of pins 1.8, 1.9,
                                 1.10, 1.11, 3.3 and 2.1-9.
     -----------------------------------------------------------------------*/
+#ifdef CFG_BRD_LPC1343_ARMBY
+	  #define CFG_TFTLCD
+      #define CFG_TFTLCD_TS_DEFAULTTHRESHOLD (50)
+      #define CFG_TFTLCD_TS_KEYPADDELAY      (100)
+    #endif
     #ifdef CFG_BRD_LPC1343_REFDESIGN
       // #define CFG_TFTLCD
       #define CFG_TFTLCD_INCLUDESMALLFONTS   (0)
@@ -1278,7 +1383,8 @@
 
   =========================================================================*/
 
-#if !defined CFG_BRD_LPC1343_REFDESIGN && \
+#if !defined CFG_BRD_LPC1343_ARMBY && \
+  !defined CFG_BRD_LPC1343_REFDESIGN && \
   !defined CFG_BRD_LPC1343_REFDESIGN_MINIMAL && \
   !defined CFG_BRD_LPC1343_TFTLCDSTANDALONE_USB && \
   !defined CFG_BRD_LPC1343_TFTLCDSTANDALONE_UART && \
@@ -1351,7 +1457,7 @@
   #ifdef CFG_PWM
     #error "CFG_TFTLCD and CFG_PWM can not be defined at the same time since they both use pin 1.9."
   #endif
-  #if !defined CFG_I2CEEPROM
+  #if !defined CFG_I2CEEPROM && !defined(CFG_BRD_LPC1343_ARMBY)
     #error "CFG_TFTLCD requires CFG_I2CEEPROM to store and retrieve configuration settings"
   #endif
 #endif

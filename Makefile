@@ -91,9 +91,8 @@ OBJS += DejaVuSansCondensed14_AA2.o DejaVuSansCondensedBold14_AA2.o
 OBJS += DejaVuSansMono10_AA2.o DejaVuSansMono13_AA2.o DejaVuSansMono14_AA2.o
 
 # LCD Driver (Only one can be included at a time!)
-# OBJS += hx8340b.o
-# OBJS += hx8347d.o
-OBJS += ILI9328.o
+OBJS += SPFD54124B.o
+# OBJS += ILI9328.o
 # OBJS += ILI9325.o
 # OBJS += ssd1331.o
 # OBJS += ssd1351.o
@@ -143,10 +142,6 @@ OBJS += w25q16bv.o
 # FM Radio
 VPATH += drivers/audio/tea5767
 OBJS += tea5767.o
-
-# IN219 Current Sensor
-VPATH += drivers/sensors/ina219
-OBJS += ina219.o
 
 ##########################################################################
 # Library files 
@@ -235,10 +230,12 @@ firmware: $(OBJS) $(SYS_OBJS)
 	$(SIZE) $(OUTFILE).elf
 	-@echo ""
 	$(OBJCOPY) $(OCFLAGS) -O binary $(OUTFILE).elf $(OUTFILE).bin
-	$(OBJCOPY) $(OCFLAGS) -O binary $(OUTFILE).elf $(OUTFILE).bin
 	$(OBJCOPY) $(OCFLAGS) -O ihex $(OUTFILE).elf $(OUTFILE).hex
 	-@echo ""
 	$(LPCRC) firmware.bin
+upload: firmware
+	openocd_swd -f interface/vsllink-swd.cfg -f ~/lpc1114_swd_flash.cfg -c "init" -c "script flash_load.script"
+
 
 clean:
 	rm -f $(OBJS) $(LD_TEMP) $(OUTFILE).elf $(OUTFILE).bin $(OUTFILE).hex

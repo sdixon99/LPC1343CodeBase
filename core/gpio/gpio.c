@@ -55,12 +55,11 @@ static bool _gpioInitialised = false;
 
 /**************************************************************************/
 /*! 
-    @brief IRQ Handler for GPIO port 0 (currently checks pin 0.1)
-
     @note  By default, this IRQ handler is probably disabled in
            projectconfig.h (see GPIO_ENABLE_IRQ0), but you can use
            the code below as a model to implement this interrupt
            handler in an appropriate place in your project.
+    @brief IRQ Handler for GPIO port 0 (Checks PB pin and turns off regulator enable)
 */
 /**************************************************************************/
 #if defined GPIO_ENABLE_IRQ0
@@ -68,11 +67,16 @@ void PIOINT0_IRQHandler(void)
 {
   uint32_t regVal;
 
-  regVal = gpioIntStatus(0, 1);
+#ifdef CFG_BRD_LPC1343_ARMBY
+  regVal = gpioIntStatus(CFG_PB_PORT, CFG_PB_PIN);
   if (regVal)
   {
-    gpioIntClear(0, 1);
+	    gpioIntClear(CFG_PB_PORT, CFG_PB_PIN);
+	    gpioSetValue(CFG_PB_PORT,CFG_PB_PIN,0); // turn off
+	    gpioSetValue(CFG_REGEN_PORT,CFG_REGEN_PIN,0); // turn off
+
   }		
+#endif
   return;
 }
 #endif
