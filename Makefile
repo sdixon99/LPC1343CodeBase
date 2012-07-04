@@ -234,7 +234,7 @@ firmware: $(OBJS) $(SYS_OBJS)
 	-@echo ""
 	$(LPCRC) firmware.bin
 upload: firmware
-	openocd_swd -f interface/vsllink-swd.cfg -f ~/lpc1114_swd_flash.cfg -c "init" -c "script flash_load.script"
+	openocd -f interface/stlink-v2.cfg -f ./lpc1343_stlink.cfg -c "init" -c "script flash_load.script"
 
 
 clean:

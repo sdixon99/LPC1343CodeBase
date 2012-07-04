@@ -71,7 +71,7 @@ void marquee(uint16_t width, uint16_t height, uint16_t color,
  */
 /**************************************************************************/
 int main(void) {
-	int i, j;
+	int i, j, k;
 	int h, w;
 	unsigned char first = 1;
 	char filename[] = "/image0.bmp";
@@ -91,6 +91,11 @@ int main(void) {
 	gpioIntClear(CFG_PB_PORT, CFG_PB_PIN);
 	// Enable the interrupt
 	gpioIntEnable(CFG_PB_PORT, CFG_PB_PIN);
+    //  Setup GPIO function on MB (middle button) pin
+	//  This may mess up USB functionality based on ROM USB code?
+//    CFG_MB_IOCON &= ~CFG_MB_MASK;
+//    CFG_MB_IOCON |= CFG_MB_FUNC_GPIO;
+//    gpioSetPullup(&CFG_MB_IOCON, gpioPullupMode_PullUp);
 #endif
 #if !defined CFG_TFTLCD
 #error "CFG_TFTLCD must be enabled in projectconfig.h for this test"
@@ -179,7 +184,17 @@ int main(void) {
 //			drawFill(THEME_COLOR_SKYBLUE_LIGHTER);
 //			systickDelay(50);
 //		}
-		systickDelay(3000);
+		for (k=0;k<300;k++) {
+			if (gpioGetValue(CFG_TB_PORT,CFG_TB_PIN) == 0) {
+				drawFill(COLOR_BLUE);
+//			} else if (gpioGetValue(CFG_MB_PORT,CFG_MB_PIN) == 0) {
+//				drawFill(COLOR_GREEN);
+			} else if (gpioGetValue(CFG_BB_PORT,CFG_BB_PIN) == 0) {
+				drawFill(COLOR_RED);
+				printf("Pressed Red\n\r");
+			}
+			systickDelay(10);
+		}
 	}
 	return 0;
 }

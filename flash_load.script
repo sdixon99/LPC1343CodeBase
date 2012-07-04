@@ -2,5 +2,6 @@ reset halt
 sleep 10
 flash write_image erase firmware.bin 0
 reset init
+reset run
 sleep 10
 shutdown

@@ -141,14 +141,10 @@ void systemInit()
   // Setup GPIO function on REGEN pin
   CFG_REGEN_IOCON &= ~CFG_REGEN_MASK;
   CFG_REGEN_IOCON |= CFG_REGEN_FUNC_GPIO;
-  //  Setup GPIO function on RB pin
-  CFG_RB_IOCON &= ~CFG_RB_MASK;
-  CFG_RB_IOCON |= CFG_RB_FUNC_GPIO;
   gpioSetDir(CFG_REGEN_PORT,CFG_REGEN_PIN,gpioDirection_Output);
-  gpioSetDir(CFG_RB_PORT,CFG_RB_PIN, gpioDirection_Input);
+  gpioSetDir(CFG_MB_PORT,CFG_MB_PIN, gpioDirection_Input);
   gpioSetDir(CFG_PB_PORT,CFG_PB_PIN, gpioDirection_Input);
-  gpioSetPullup(&IOCON_PIO0_5, gpioPullupMode_PullDown);
-  gpioSetPullup(&IOCON_PIO0_1, gpioPullupMode_PullUp);
+  gpioSetPullup(&CFG_PB_IOCON, gpioPullupMode_PullDown);
   // Set the regulator enable pin on
   gpioSetValue(CFG_REGEN_PORT,CFG_REGEN_PIN,1);
 

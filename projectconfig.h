@@ -518,11 +518,15 @@
 
     -----------------------------------------------------------------------*/
     #ifdef CFG_BRD_LPC1343_ARMBY
-      #define CFG_RB_PORT		          (0)
-      #define CFG_RB_PIN	              (1)
-      #define CFG_RB_IOCON                IOCON_PIO0_1
-      #define CFG_RB_MASK                 IOCON_PIO0_1_FUNC_MASK
-      #define CFG_RB_FUNC_GPIO            IOCON_PIO0_1_FUNC_GPIO
+      #define CFG_MB_PORT		          (0)
+      #define CFG_MB_PIN	              (1)
+      #define CFG_MB_IOCON                IOCON_PIO0_1
+      #define CFG_MB_MASK                 IOCON_PIO0_1_FUNC_MASK
+      #define CFG_MB_FUNC_GPIO            IOCON_PIO0_1_FUNC_GPIO
+      #define CFG_TB_PORT		          (3)
+      #define CFG_TB_PIN		          (0)
+      #define CFG_BB_PORT	              (3)
+      #define CFG_BB_PIN	              (1)
       #define CFG_REGEN_PORT              (1)
       #define CFG_REGEN_PIN	              (0)
       #define CFG_REGEN_IOCON             IOCON_JTAG_TMS_PIO1_0
