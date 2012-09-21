@@ -124,14 +124,12 @@ void SPFD54124BWriteData(uint8_t data)
 //	ssp0Deselect();
 }
 
-void SPFD54124BWriteData2(uint8_t data1, uint8_t data2) {
-	setSPIwidth9();
+inline void SPFD54124BWriteData2(uint8_t data1, uint8_t data2) {
 	spiData[0] = (int)(data1 | 0x100);
         spiData[1] = (int)(data2 | 0x100);
   CLR_CS;
 	sspSend(0, (int *)&spiData, 2);
   SET_CS;
-  setSPIwidth8();
 
 
 }
@@ -285,6 +283,7 @@ void lcdFillRGB(uint16_t color)
   uint8_t x, y;
   SPFD54124BSetAddrWindow(0, 0, lcdGetWidth() - 1, lcdGetHeight() - 1);
   SPFD54124BWriteCmd(SPFD54124B_RAMWR);  // write to RAM
+  setSPIwidth9();
   for (x=0; x < lcdGetWidth(); x++)
   {
     for (y=0; y < lcdGetHeight(); y++)
@@ -302,9 +301,11 @@ void lcdDrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
   SPFD54124BSetAddrWindow(x,y,x+1,y+1);
   SPFD54124BWriteCmd(SPFD54124B_RAMWR);  // write to RAM
+  setSPIwidth9();
 //  SPFD54124BWriteData(color >> 8);
 //  SPFD54124BWriteData(color);
-   	SPFD54124BWriteData2(color >> 8, color);
+  SPFD54124BWriteData2(color >> 8, color);
+  setSPIwidth8();
 }
 
 /*************************************************/
@@ -333,6 +334,7 @@ void lcdDrawHLine(uint16_t x0, uint16_t x1, uint16_t y, uint16_t color)
 
   SPFD54124BSetAddrWindow(x0, y, lcdGetWidth(), y + 1);
   SPFD54124BWriteCmd(SPFD54124B_RAMWR);  // write to RAM
+  setSPIwidth9();
   for (pixels = 0; pixels < x1 - x0 + 1; pixels++)
   {
 //    SPFD54124BWriteData(color >> 8);
@@ -340,6 +342,7 @@ void lcdDrawHLine(uint16_t x0, uint16_t x1, uint16_t y, uint16_t color)
    	SPFD54124BWriteData2(color >> 8, color);
   }
   SPFD54124BWriteCmd(SPFD54124B_NOP);
+  setSPIwidth8();
 }
 
 /*************************************************/
@@ -368,12 +371,14 @@ void lcdDrawVLine(uint16_t x, uint16_t y0, uint16_t y1, uint16_t color)
 
   SPFD54124BSetAddrWindow(x, y0, x, lcdGetHeight());
   SPFD54124BWriteCmd(SPFD54124B_RAMWR);  // write to RAM
+  setSPIwidth9();
   for (pixels = 0; pixels < y1 - y0 + 1; pixels++)
   {
 //    SPFD54124BWriteData(color >> 8);
 //    SPFD54124BWriteData(color);
    	SPFD54124BWriteData2(color >> 8, color);
   }
+  setSPIwidth8();
   SPFD54124BWriteCmd(SPFD54124B_NOP);
 }
 
