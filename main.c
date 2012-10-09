@@ -126,20 +126,9 @@ int main(void) {
 		// ---------------------------------------------------------------------
 //  drawFill(COLOR_WHITE);
 //  drawRectangle(10,10,120,120,COLOR_BLACK);
-//  for (j=0;j<10000;j++) {
-//	  for (i=11;i<119;i++) {
-//		  if (!first) {
-//			  drawLine(i,60+sin((i+j-1-11.0)/5.0)*20,i+1,60+sin((i+j-1-10.0)/5.0)*20,COLOR_WHITE);
-//		  }
-//		  drawLine(i,60+sin((i+j-11.0)/5.0)*20,i+1,60+sin((i+j-10.0)/5.0)*20,COLOR_RED);
-//	  }
-//	  //    systickDelay(10);
-//	  first = 0;
-//  }
 		if (filec == 'c') {
 			drawCircles();
 			systickDelay(3000);
-//            drawFill(COLOR_WHITE);
 			filec = '0';
 		}
 		filename[6] = filec;
@@ -178,35 +167,9 @@ int main(void) {
 		h = lcdGetHeight();
 		w = lcdGetWidth();
 
-//		for (i = 0; i < 20; i++) {
-//			marquee(w, h, THEME_COLOR_SKYBLUE_BASE, COLOR_BLACK);
-//			systickDelay(100);
-//			marquee(w, h, COLOR_BLACK, COLOR_RED);
-//			systickDelay(100);
-//		}
-//		for (i = 0; i < (h - 16); i += 16) {
-//			for (j = 0; j < (w - 8); j += 8) {
-//				drawRectangleFilled(j, i, j + 8, i + 8, COLOR_BLACK);
-//				systickDelay(5);
-//			}
-//			for (j = (w - 8); j > 0; j -= 8) {
-//				drawRectangleFilled(j, i + 8, j + 8, i + 16, COLOR_BLACK);
-//				systickDelay(5);
-//			}
-//		}
-//		for (i = 0; i < 5; i++) {
-//			drawFill(THEME_COLOR_SKYBLUE_BASE);
-//			systickDelay(50);
-//			drawFill(THEME_COLOR_SKYBLUE_DARKER);
-//			systickDelay(50);
-//			drawFill(THEME_COLOR_SKYBLUE_LIGHTER);
-//			systickDelay(50);
-//		}
 		for (k=0;k<300;k++) {
 			if (gpioGetValue(CFG_TB_PORT,CFG_TB_PIN) == 0) {
 				drawFill(COLOR_BLUE);
-//			} else if (gpioGetValue(CFG_MB_PORT,CFG_MB_PIN) == 0) {
-//				drawFill(COLOR_GREEN);
 			} else if (gpioGetValue(CFG_BB_PORT,CFG_BB_PIN) == 0) {
 				drawFill(COLOR_RED);
 				printf("Pressed Red\n\r");
