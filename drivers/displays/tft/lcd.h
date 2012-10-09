@@ -67,6 +67,7 @@ extern void     lcdInit(void);
 extern void     lcdTest(void);
 extern uint16_t lcdGetPixel(uint16_t x, uint16_t y);
 extern void     lcdFillRGB(uint16_t data);
+extern void     lcdDrawLinePixels(uint16_t xmin, uint16_t xmax, uint16_t ypos, uint8_t *buffer, uint16_t (*func)(uint8_t, uint8_t, uint8_t));
 extern void     lcdDrawPixel(uint16_t x, uint16_t y, uint16_t color);
 extern void     lcdDrawPixels(uint16_t x, uint16_t y, uint16_t *data, uint32_t len);
 extern void     lcdDrawHLine(uint16_t x0, uint16_t x1, uint16_t y, uint16_t color);

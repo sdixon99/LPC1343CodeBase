@@ -119,13 +119,8 @@ bmp_error_t bmpParseBitmap(uint16_t x, uint16_t y, FIL file)
       // Error or EOF
       return BMP_ERROR_PREMATUREEOF;
     }
-    for (px = 0; px < infoHeader.width; px++)
-    {
-      // Render pixel
-      // ToDo: This is a brutally slow way of rendering bitmaps ...
-      //        update to pass one row of data at a time
-      drawPixel(x + px, y + py - 1, colorsRGB24toRGB565(buffer[(px * 3) + 2], buffer[(px * 3) + 1], buffer[(px * 3)]));
-    }
+      // Render pixels
+    	drawlinePixels(0,infoHeader.width-1, py-1, buffer, colorsRGB24toRGB565);
   }
 
   return BMP_ERROR_NONE;

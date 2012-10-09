@@ -131,6 +131,10 @@ void drawPixel(uint16_t x, uint16_t y, uint16_t color)
   }
 }
 
+void drawlinePixels(uint16_t xmin, uint16_t xmax, uint16_t ypos, uint8_t *buffer, uint16_t (*func)(uint8_t, uint8_t, uint8_t)) {
+	lcdDrawLinePixels(xmin, xmax, ypos, buffer, func);
+}
+
 /**************************************************************************/
 /*!
     @brief  Fills the screen with the specified color

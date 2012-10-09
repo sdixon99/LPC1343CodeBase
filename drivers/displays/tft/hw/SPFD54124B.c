@@ -294,6 +294,7 @@ void lcdFillRGB(uint16_t color)
     }
   }
   SPFD54124BWriteCmd(SPFD54124B_NOP);
+  setSPIwidth8();
 }
 
 /*************************************************/
@@ -305,6 +306,29 @@ void lcdDrawPixel(uint16_t x, uint16_t y, uint16_t color)
 //  SPFD54124BWriteData(color >> 8);
 //  SPFD54124BWriteData(color);
   SPFD54124BWriteData2(color >> 8, color);
+  setSPIwidth8();
+}
+
+void lcdDrawLinePixels(uint16_t xmin, uint16_t xmax, uint16_t ypos, uint8_t *buffer, uint16_t (*func)(uint8_t, uint8_t, uint8_t)) {
+  uint16_t x, pixels;
+  uint16_t color;
+  SPFD54124BSetAddrWindow(xmin, ypos, xmax, ypos + 1);
+  SPFD54124BWriteCmd(SPFD54124B_RAMWR);  // write to RAM
+  setSPIwidth9();
+  uint8_t *px;
+  uint8_t r, g, b;
+
+  px = buffer;
+  for (pixels = 0; pixels < xmax - xmin + 1; pixels++)
+  {
+	b = *px++;
+	g = *px++;
+	r = *px++;
+//	color = colorsRGB24toRGB565(r, g, b);
+	color = (*func)(r, g, b);
+   	SPFD54124BWriteData2(color >> 8, color);
+  }
+  SPFD54124BWriteCmd(SPFD54124B_NOP);
   setSPIwidth8();
 }
 
@@ -378,8 +402,8 @@ void lcdDrawVLine(uint16_t x, uint16_t y0, uint16_t y1, uint16_t color)
 //    SPFD54124BWriteData(color);
    	SPFD54124BWriteData2(color >> 8, color);
   }
-  setSPIwidth8();
   SPFD54124BWriteCmd(SPFD54124B_NOP);
+  setSPIwidth8();
 }
 
 /*************************************************/

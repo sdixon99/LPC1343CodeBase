@@ -64,6 +64,18 @@ void marquee(uint16_t width, uint16_t height, uint16_t color,
 	drawRectangleFilled(0, height - lineWidth, width, height, color);
 	drawRectangleFilled(0, 0, lineWidth, height, color);
 }
+
+void drawCircles() {
+	uint16_t myColors[5] = {COLOR_MAGENTA, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW};
+	int i;
+	int r, x, y;
+	for (i=0; i<40; i++) {
+		r = rand()&31;
+		x = rand()&127;;
+		y = rand()&127;
+		drawCircleFilled(x,y,r,myColors[i%5]);
+	}
+}
 /**************************************************************************/
 /*! 
  Main program entry point.  After reset, normal code execution will
@@ -108,7 +120,7 @@ int main(void) {
 
   uint32_t currentSecond, lastSecond;
   currentSecond = lastSecond = 0;
-  
+  bmp_error_t   error;
 	while (1) {
 		// Clear the screen
 		// ---------------------------------------------------------------------
@@ -124,10 +136,16 @@ int main(void) {
 //	  //    systickDelay(10);
 //	  first = 0;
 //  }
-		filename[6] = filec;
-		bmp_error_t error = bmpDrawBitmap(0, 0, filename);
-		if (filec == '9') {
+		if (filec == 'c') {
+			drawCircles();
+			systickDelay(3000);
+//            drawFill(COLOR_WHITE);
 			filec = '0';
+		}
+		filename[6] = filec;
+		error = bmpDrawBitmap(0, 0, filename);
+		if (filec == '9') {
+			filec = 'c';
 		} else {
 			filec++;
 		}
@@ -137,7 +155,7 @@ int main(void) {
 			case BMP_ERROR_SDINITFAIL:
 				break;
 			case BMP_ERROR_FILENOTFOUND:
-				filec = '0';
+				filec = 'c';
 				continue;
 			case BMP_ERROR_NOTABITMAP:
 				// First two bytes of image not 'BM'

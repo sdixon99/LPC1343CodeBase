@@ -76,6 +76,7 @@ typedef enum
 void      drawTestPattern      ( void );
 void      drawPixel            ( uint16_t x, uint16_t y, uint16_t color );
 void      drawFill             ( uint16_t color );
+void      drawlinePixels        (uint16_t xmin, uint16_t xmax, uint16_t ypos, uint8_t *buffer, uint16_t (*func)(uint8_t, uint8_t, uint8_t));
 void      drawLine             ( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color );
 void      drawLineDotted       ( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t space, uint16_t solid, uint16_t color );
 void      drawCircle           ( uint16_t xCenter, uint16_t yCenter, uint16_t radius, uint16_t color );
