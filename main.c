@@ -132,6 +132,7 @@ int main(void) {
 			filec = '0';
 		}
 		filename[6] = filec;
+    /* read a 132x162x16 bmp file from the SD card and display it
 		error = bmpDrawBitmap(0, 0, filename);
 		if (filec == '9') {
 			filec = 'c';
